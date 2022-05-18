@@ -5,17 +5,58 @@ const SVGtoPNG = () => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  //background
+  const generateBackground = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number
+  ) => {
+    //draw background with gradient
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, "#fdfbfb");
+    gradient.addColorStop(1, "red");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    //draw background with radial gradient
+    const gradient2 = ctx.createRadialGradient(
+      width / 2,
+      height / 2,
+      0,
+      width / 2,
+      height / 2,
+      width / 2
+    );
+    gradient2.addColorStop(0, "red");
+    gradient2.addColorStop(1, "blue");
+    ctx.fillStyle = gradient2;
+    ctx.fillRect(0, 0, width, height);
+    //draw background with conic gradient
+    //TODO recheck this
+    const gradient3 = ctx.createConicGradient(0, 100, 100);
+
+    // Add five color stops
+    gradient.addColorStop(0, "red");
+    gradient.addColorStop(0.25, "orange");
+    gradient.addColorStop(0.5, "yellow");
+    gradient.addColorStop(0.75, "green");
+    gradient.addColorStop(1, "blue");
+
+    // Set the fill style and draw a rectangle
+    ctx.fillStyle = gradient3;
+    ctx.fillRect(0, 0, width, height);
+  };
+  //shapes
   const generateShape = (
     shapePath: string,
-    canvasState: HTMLCanvasElement,
-    contextFromCanvasState: CanvasRenderingContext2D,
+    ctx: CanvasRenderingContext2D,
+
     shapeDimensions: { x: number; y: number; width: number; height: number }
   ) => {
     const shapeX: HTMLImageElement = new Image();
     shapeX.src = shapePath;
     shapeX.onload = () => {
       //img, x, y, width, height
-      contextFromCanvasState.drawImage(
+      ctx.drawImage(
         shapeX,
         shapeDimensions.x,
         shapeDimensions.y,
@@ -23,12 +64,6 @@ const SVGtoPNG = () => {
         shapeDimensions.height
       );
     };
-    //if this doesn't work, try extract the canvas.toBlob out to the nesting function
-    canvasState!.toBlob((blob) => {
-      if (blob) {
-        saveAs(blob, `${Math.random().toString(16).slice(2, -1)}.png`);
-      }
-    });
   };
   // grid drawing utilities
   const drawGrid = (
@@ -57,7 +92,6 @@ const SVGtoPNG = () => {
         generateShape(
           //somehow math random is not working here
           pathsToDrawFrom[0],
-          canvas!,
           ctx,
           {
             x: j * gridGap,
@@ -77,15 +111,29 @@ const SVGtoPNG = () => {
   const generateImages = useCallback(() => {
     if (canvas) {
       //set width and height of image to 100
+      const commonContext = canvas.getContext("2d");
+      //best quality
+      commonContext!.imageSmoothingEnabled = true;
+      commonContext!.imageSmoothingQuality = "high";
 
+      //maybe wait a bit before generating background
+      generateBackground(commonContext!, 400, 400);
       drawGrid(
         ["/cc.svg", "/cc.svg"],
         { width: 400, height: 400 },
-        { rows: 2, cols: 2 },
+        { rows: 3, cols: 7 },
         50,
         10,
-        canvas.getContext("2d")!
+        commonContext!
       );
+
+      //if this doesn't work, try extract the canvas.toBlob out to the nesting function
+      //save immediately function.
+      /* canvas!.toBlob((blob) => {
+        if (blob) {
+          saveAs(blob, `${Math.random().toString(16).slice(2, -1)}.png`);
+        }
+      }); */
     }
   }, [canvas]);
 
@@ -96,18 +144,18 @@ const SVGtoPNG = () => {
   return (
     <div
       style={{
-        position: "absolute",
-        transform: "translate(-50%,-50%)",
-        left: "50%",
-        top: "50%",
         display: "flex",
+
         flexDirection: "column",
       }}
     >
+      {/* download anchor IS NOT ON THE FEATURE LIST so stop */}
+
       <canvas
         style={{
-          width: "200%",
-          height: "200%",
+          width: "100%",
+          height: "100%",
+
           transform: "translate(0,0)",
         }}
         aria-label="canvas-label"
@@ -116,6 +164,7 @@ const SVGtoPNG = () => {
         <p>Can not display canvas.</p>
       </canvas>
 
+      <br></br>
       <button onClick={() => generate()} style={{ padding: "1em" }}>
         Generate
       </button>
