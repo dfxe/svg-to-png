@@ -1,55 +1,63 @@
-import React, { useEffect } from "react";
-import { Canvg } from "canvg";
-function SVGtoPNG() {
+import React from "react";
+
+type Props = {
+  svgStrings: string[];
+};
+export default function SVGtoPNG({ svgStrings }: Props) {
+  const [open, setOpen] = React.useState(false);
+  const svgImageRef = React.useRef<HTMLImageElement>(null);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const generateImage = () => {
-    //@ts-ignore
-    let v = null;
+  const outImageRef = React.useRef<HTMLImageElement>(null);
+  const [canvasDimensions, setCanvasDimensions] = React.useState({
+    width: 500,
+    height: 500,
+  });
+  const [canvasScale, setCanvasScale] = React.useState(1);
 
-    window.onload = async () => {
-      const ctx = canvasRef!.current!.getContext("2d");
+  const svgs: string[] = svgStrings;
 
-      v = await Canvg.from(ctx!, "../images/nice.svg");
+  const svgUrlToPng = (svgUrl: string) => {
+    svgImageRef!.current!.onload = () => {
+      const canvasCtx = canvasRef!.current!.getContext("2d");
+      canvasCtx!.drawImage(svgImageRef!.current!, 0, 0);
 
-      // Start SVG rendering with animations and mouse handling.
-      v.start();
+      // This needs be nested in <a id="download_image" href="" download="image.png"></a>
+      outImageRef!.current!.src = canvasRef!.current!.toDataURL("image/png");
+      outImageRef!.current!.style.transform = `translate(${
+        (Math.random() * 500 + 200, Math.random() * 500 + 200)
+      },0) scale(${canvasScale / 2})`;
     };
-
-    window.onbeforeunload = () => {
-      //@ts-ignore
-      v!.stop();
-    };
+    svgImageRef!.current!.src = svgUrl;
   };
-  useEffect(() => {
-    generateImage();
-  }, []);
+  const getSvgUrl = (svg: string) => {
+    return URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+  };
+
+  //FIXME: for this to work, need to add an id to the parent element and access it's child list.
+  const svgToPng = (svgStringsToPng: string[]) => {
+    for (let i = 0; i < svgStringsToPng.length; i++) {
+      svgUrlToPng(getSvgUrl(svgStringsToPng[i]));
+    }
+  };
+
   return (
-    <div
-      style={{
-        position: "absolute",
-        transform: "translate(-50%,-50%)",
-        left: "50%",
-        top: "50%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <>
+      <img hidden={false} ref={svgImageRef} />
+      <a download="image">
+        <img ref={outImageRef} />
+      </a>
       <canvas
-        style={{
-          width: "200%",
-          height: "200%",
-          transform: "translate(0,0)",
-        }}
-        aria-label="canvas-label"
         ref={canvasRef}
+        width={canvasDimensions.width}
+        height={canvasDimensions.height}
+      ></canvas>
+      <button
+        onClick={() => {
+          svgToPng(svgs);
+        }}
       >
-        <p>Can not display canvas.</p>
-      </canvas>
-      <button onClick={generateImage} style={{ padding: "1em" }}>
-        Generate
+        Export PNG
       </button>
-    </div>
+    </>
   );
 }
-
-export default SVGtoPNG;

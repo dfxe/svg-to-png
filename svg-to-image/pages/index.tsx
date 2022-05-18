@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import SVGtoPNG from "../components/SVGtoPNG";
+import SVGtoPNG from "../components/SVGCanvas";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
