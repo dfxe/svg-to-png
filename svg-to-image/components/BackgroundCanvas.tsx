@@ -1,21 +1,28 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 
-const NoiseCanvas = () => {
+type Props = {
+  children: React.ReactNode;
+};
+const BackgroundCanvas = ({ children }: Props) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
     if (canvasRef.current) {
       setCanvas(canvasRef?.current);
     }
   }, [canvasRef]);
+
   const generateImages = useCallback(() => {
     if (canvas) {
       //set width and height of image to 100
+
       const ctx = canvas.getContext("2d");
       //best quality
       ctx!.imageSmoothingEnabled = true;
       ctx!.imageSmoothingQuality = "high";
-      const roundRect = (
+
+      const roundBackground = (
         ctx: CanvasRenderingContext2D,
         x: number,
         y: number,
@@ -62,14 +69,25 @@ const NoiseCanvas = () => {
       };
 
       //ctx!.strokeStyle = "rgb(255, 0, 0)";
-      ctx!.fillStyle = "rgba(255, 255, 0, .5)";
-      roundRect(ctx!, 5, 5, Math.random() * 100 + 200, 100, 20, "blue", true);
+      ctx!.fillStyle = "rgba(255, 255, 0, 1)";
+      roundBackground(
+        ctx!,
+        5,
+        5,
+        Math.random() * 100 + 200,
+        100,
+        20,
+        "blue",
+        true
+      );
     }
   }, [canvas]);
+
   const generate = useCallback(() => {
-    canvas!.getContext("2d")?.clearRect(0, 0, canvas!.width, canvas!.height);
+    canvas?.getContext("2d")?.clearRect(0, 0, canvas!.width, canvas!.height);
     generateImages();
   }, [generateImages]);
+
   return (
     <div
       style={{
@@ -81,7 +99,6 @@ const NoiseCanvas = () => {
         style={{
           width: "100%",
           height: "100%",
-
           transform: "translate(0,0)",
         }}
         aria-label="canvas-label"
@@ -98,4 +115,4 @@ const NoiseCanvas = () => {
   );
 };
 
-export default NoiseCanvas;
+export default BackgroundCanvas;

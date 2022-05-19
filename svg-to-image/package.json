@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@microsoft/tsdoc": "^0.14.1",
     "blobshape": "^1.0.0",
     "canvg": "^4.0.0",
     "file-saver": "^2.0.5",
