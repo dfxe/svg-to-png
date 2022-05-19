@@ -53,7 +53,6 @@ const SVGtoPNG = () => {
     shapeDimensions: { x: number; y: number; width: number; height: number }
   ) => {
     const shapeX: HTMLImageElement = new Image();
-    r;
     shapeX.src = shapePath;
     shapeX.onload = () => {
       //img, x, y, width, height
