@@ -60,8 +60,7 @@ const NoiseCanvas = () => {
           ctx.stroke();
         }
       };
-      /* roundRect(ctx, 5, 5, 50, 50); */
-      // To change the color on the rectangle, just manipulate the context
+
       //ctx!.strokeStyle = "rgb(255, 0, 0)";
       ctx!.fillStyle = "rgba(255, 255, 0, .5)";
       roundRect(ctx!, 5, 5, Math.random() * 100 + 200, 100, 20, "blue", true);
