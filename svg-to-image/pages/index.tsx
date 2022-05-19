@@ -1,9 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import BlobCanvas from "../components/BlobCanvas";
 import ConcentricsCanvas from "../components/ConcentricsCanvas";
-import NoiseCanvas from "../components/NoiseCanvas";
+import NoiseCanvas from "../components/BackgroundCanvas";
 import SVGtoPNG from "../components/SVGCanvas";
 import styles from "../styles/Home.module.css";
 

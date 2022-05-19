@@ -53,6 +53,7 @@ const SVGtoPNG = () => {
     shapeDimensions: { x: number; y: number; width: number; height: number }
   ) => {
     const shapeX: HTMLImageElement = new Image();
+    r;
     shapeX.src = shapePath;
     shapeX.onload = () => {
       //img, x, y, width, height
@@ -70,7 +71,6 @@ const SVGtoPNG = () => {
     pathsToDrawFrom: string[],
     canvasDimensions: { width: number; height: number },
     rowsAndCols: { rows: number; cols: number },
-
     gridGap: number,
     padding: number,
     ctx: CanvasRenderingContext2D
@@ -126,7 +126,7 @@ const SVGtoPNG = () => {
         10,
         commonContext!
       );
-
+      commonContext!.clearRect(0, 0, 400, 400);
       //if this doesn't work, try extract the canvas.toBlob out to the nesting function
       //save immediately function.
       /* canvas!.toBlob((blob) => {
@@ -149,8 +149,6 @@ const SVGtoPNG = () => {
         flexDirection: "column",
       }}
     >
-      {/* download anchor IS NOT ON THE FEATURE LIST so stop */}
-
       <canvas
         style={{
           width: "100%",
