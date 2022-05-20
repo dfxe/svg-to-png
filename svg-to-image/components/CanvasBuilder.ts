@@ -1,6 +1,7 @@
 //@ts-ignore
 import blobshape from "blobshape";
 import { saveAs } from "file-saver";
+import { urlToHttpOptions } from "url";
 
 /**
  * Draws text onto the canvas
@@ -33,7 +34,7 @@ const drawText = (
  * @param colors - color array for the gradient
  * @beta
  */
-const generateGradient = (
+const drawGradient = (
   ctx: CanvasRenderingContext2D,
   gradientType: string,
   colors: string[]
@@ -82,16 +83,22 @@ const generateGradient = (
  * @param fill - The color to fill the rectangle with
  * @param stroke - The color to stroke the rectangle with
  */
-const generateBackground = (
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number,
-  fill: string,
-  stroke: boolean
-) => {
+export interface RectangleOptions {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  radius: number;
+  fill: string;
+  stroke: boolean;
+}
+const drawBackground = ({
+  ctx,
+  options: { x, y, width, height, radius, fill, stroke },
+}: {
+  ctx: CanvasRenderingContext2D;
+  options: RectangleOptions;
+}) => {
   const radiusDimensions = {
     tl: radius,
     tr: radius,
@@ -134,7 +141,7 @@ const generateBackground = (
  * @param ctx - The canvas context to draw on
  * @param shapeDimensions - The dimensions of the shape
  */
-const generateShape = (
+const drawShape = (
   shapePath: string,
   ctx: CanvasRenderingContext2D,
   shapeDimensions: { x: number; y: number; width: number; height: number }
@@ -160,19 +167,25 @@ const generateShape = (
  * @param gridDimensions - The dimensions of the grid
  * @param ctx - The canvas context to draw on
  */
-const drawGrid = (
-  pathsToDrawFrom: string[],
-  canvasDimensions: { width: number; height: number },
+export interface GridOptions {
+  pathsToDrawFrom: string[];
+  canvasDimensions: { width: number; height: number };
   gridDimensions: {
     rows: number;
     cols: number;
     cellSize: { width: number; height: number };
     gridGap: number;
     padding: number;
-  },
+  };
+}
 
-  ctx: CanvasRenderingContext2D
-) => {
+const drawGrid = ({
+  ctx,
+  options: { pathsToDrawFrom, canvasDimensions, gridDimensions },
+}: {
+  ctx: CanvasRenderingContext2D;
+  options: GridOptions;
+}) => {
   const gridWidth = canvasDimensions.width / gridDimensions.cols;
   const gridHeight = canvasDimensions.height / gridDimensions.rows;
   const gridGapWidth = gridWidth + gridDimensions.gridGap;
@@ -189,7 +202,7 @@ const drawGrid = (
   const autoHeight = gridHeight / pathsToDrawFrom.length;
   for (let i = 0; i < gridDimensions.rows; i++) {
     for (let j = 0; j < gridDimensions.cols; j++) {
-      generateShape(pathsToDrawFrom[0], ctx, {
+      drawShape(pathsToDrawFrom[0], ctx, {
         x: j * gridWidth,
         y: i * gridHeight,
         width: gridDimensions.cellSize.width,
@@ -203,26 +216,43 @@ const drawGrid = (
  * Draws one or more curved polygons, often referred to as a blobs
  * @param ctx - The canvas context to draw on
  */
-const drawBlobs = (ctx: CanvasRenderingContext2D, howMany: number) => {
-  const blobPath = new Path2D(
-    blobshape({
-      size: 100,
-      grow: 0.5,
-      edges: 6,
-      seed: Math.random() * 1000,
-    }).path
-  );
-  //for moving purposes
-  /* let m = new DOMMatrix();
-  m.a = 1;
-  m.b = 0;
-  m.c = 0;
-  m.d = 1;
-  m.e = 200;
-  m.f = 0;
-  blobPath.addPath(blobPath, m); */
+export interface BlobOptions {
+  numOfPolygons: number;
+  polygonDimensions: {
+    size: number;
+    grow: number;
+    edges: number;
+    seed: number;
+  };
+}
+const drawBlobs = ({
+  ctx,
+  options: { numOfPolygons, polygonDimensions },
+}: {
+  ctx: CanvasRenderingContext2D;
+  options: BlobOptions;
+}) => {
+  for (let i = 0; i < numOfPolygons; i++) {
+    const blobPath = new Path2D(
+      blobshape({
+        size: polygonDimensions.size,
+        grow: polygonDimensions.grow,
+        edges: polygonDimensions.edges,
+        seed: polygonDimensions.seed,
+      }).path
+    );
+    //for moving purposes
+    /* let m = new DOMMatrix();
+    m.a = 1;
+    m.b = 0;
+    m.c = 0;
+    m.d = 1;
+    m.e = 200;
+    m.f = 0;
+    blobPath.addPath(blobPath, m); */
 
-  ctx?.fill(blobPath);
+    ctx?.fill(blobPath);
+  }
 };
 
 /**
@@ -258,18 +288,36 @@ const clearCanvas = (ctx: CanvasRenderingContext2D) => {
 };
 
 /**
- * Picks which object to draw on the canvas
+ * Executes drawing
  * @param ctx - The canvas context to draw on
  * @param canvasDimensions - The dimensions of the canvas
  * @param objectToDraw - The object to draw
  */
-export const builderDirector = (
+interface DrawObject {
+  type: string;
+  rect?: RectangleOptions;
+  grid?: GridOptions;
+  blob?: BlobOptions;
+}
+export const build = (
   ctx: CanvasRenderingContext2D,
-  canvasDimensions: { width: number; height: number },
-  objectToDraw: any
+  drawables: DrawObject[]
 ) => {
-  clearCanvas(ctx);
-  if (objectToDraw.type === "grid") {
+  if (drawables.length >= 1) {
+    clearCanvas(ctx);
+    for (let i = 0; i < drawables.length; i++) {
+      if (drawables[i].type === "background") {
+        drawBackground({ ctx: ctx, options: drawables[i].rect });
+      } else if (drawables[i].type === "grid") {
+        drawGrid({ ctx: ctx, options: drawables[i].grid });
+      } else if (drawables[i].type === "blob") {
+        drawBlobs({ ctx: ctx, options: drawables[i].blob });
+      }
+    }
+  } else {
+    throw new Error("No objects to draw");
+  }
+  /* if (objectToDraw.type === "grid") {
     drawGrid(
       objectToDraw.pathsToDrawFrom,
       canvasDimensions,
@@ -282,5 +330,5 @@ export const builderDirector = (
     generateShape(objectToDraw.shapePath, ctx, objectToDraw.shapeDimensions);
   } else if (objectToDraw.type === "text") {
     //drawText(ctx, objectToDraw.text, objectToDraw.textDimensions, objectToDraw.textStyle,);
-  }
+  } */
 };
