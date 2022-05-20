@@ -11,7 +11,7 @@ import { saveAs } from "file-saver";
  * @param font - The font to use
  * @param color - The color to draw the text in
  */
-export const drawText = (
+const drawText = (
   ctx: CanvasRenderingContext2D,
   x: number,
   y: number,
@@ -82,7 +82,7 @@ const generateGradient = (
  * @param fill - The color to fill the rectangle with
  * @param stroke - The color to stroke the rectangle with
  */
-export const generateBackground = (
+const generateBackground = (
   ctx: CanvasRenderingContext2D,
   x: number,
   y: number,
@@ -134,7 +134,7 @@ export const generateBackground = (
  * @param ctx - The canvas context to draw on
  * @param shapeDimensions - The dimensions of the shape
  */
-export const generateShape = (
+const generateShape = (
   shapePath: string,
   ctx: CanvasRenderingContext2D,
   shapeDimensions: { x: number; y: number; width: number; height: number }
@@ -160,7 +160,7 @@ export const generateShape = (
  * @param gridDimensions - The dimensions of the grid
  * @param ctx - The canvas context to draw on
  */
-export const drawGrid = (
+const drawGrid = (
   pathsToDrawFrom: string[],
   canvasDimensions: { width: number; height: number },
   gridDimensions: {
@@ -203,7 +203,7 @@ export const drawGrid = (
  * Draws one or more curved polygons, often referred to as a blobs
  * @param ctx - The canvas context to draw on
  */
-export const drawBlobs = (ctx: CanvasRenderingContext2D, howMany: number) => {
+const drawBlobs = (ctx: CanvasRenderingContext2D, howMany: number) => {
   const blobPath = new Path2D(
     blobshape({
       size: 100,
@@ -231,7 +231,7 @@ export const drawBlobs = (ctx: CanvasRenderingContext2D, howMany: number) => {
  *
  * @returns - The canvas as a HTMLImageElement
  */
-export const saveCanvasToImage = (canvas: HTMLCanvasElement) => {
+const saveCanvasToImage = (canvas: HTMLCanvasElement) => {
   const image = new Image();
   image.src = canvas.toDataURL("image/png");
   return image;
@@ -241,7 +241,7 @@ export const saveCanvasToImage = (canvas: HTMLCanvasElement) => {
  * Saves the canvas to a file
  * @param canvas - The canvas to draw on
  */
-export const saveCanvasToBlob = (canvas: HTMLCanvasElement) => {
+const saveCanvasToBlob = (canvas: HTMLCanvasElement) => {
   canvas!.toBlob((blob) => {
     if (blob) {
       saveAs(blob, `${Math.random().toString(16).slice(2, -1)}.png`);
@@ -253,10 +253,16 @@ export const saveCanvasToBlob = (canvas: HTMLCanvasElement) => {
  * Clears the canvas
  * @param ctx - The canvas context to draw on
  */
-export const clearCanvas = (ctx: CanvasRenderingContext2D) => {
+const clearCanvas = (ctx: CanvasRenderingContext2D) => {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 };
 
+/**
+ * Picks which object to draw on the canvas
+ * @param ctx - The canvas context to draw on
+ * @param canvasDimensions - The dimensions of the canvas
+ * @param objectToDraw - The object to draw
+ */
 export const builderDirector = (
   ctx: CanvasRenderingContext2D,
   canvasDimensions: { width: number; height: number },
