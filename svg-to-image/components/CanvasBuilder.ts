@@ -1,7 +1,6 @@
 //@ts-ignore
 import blobshape from "blobshape";
 import { saveAs } from "file-saver";
-
 /**
  * Draws text onto the canvas
  * @param ctx - The canvas context to draw on
@@ -26,7 +25,7 @@ const drawText = ({
   ctx: CanvasRenderingContext2D;
   options: TextOptions;
 }) => {
-  ctx.font = font;
+  ctx.font = `${fontSize}px ${font}`;
   ctx.fillStyle = color;
   ctx.fillText(text, x, y);
 };
@@ -292,7 +291,19 @@ const saveCanvasToBlob = (canvas: HTMLCanvasElement) => {
 const clearCanvas = (ctx: CanvasRenderingContext2D) => {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 };
-
+//@ts-ignore
+const isTypeRectangleOptions = (shape: any): shape is RectangleOptions => {
+  return (shape as RectangleOptions) !== undefined;
+};
+const isTypeGridOptions = (shape: any): shape is GridOptions => {
+  return (shape as GridOptions) !== undefined;
+};
+const isTypeBlobOptions = (shape: any): shape is BlobOptions => {
+  return (shape as BlobOptions) !== undefined;
+};
+const isTypeTextOptions = (shape: any): shape is TextOptions => {
+  return (shape as TextOptions) !== undefined;
+};
 interface DrawObject {
   type: string;
   rect?: RectangleOptions;
@@ -300,6 +311,7 @@ interface DrawObject {
   blob?: BlobOptions;
   text?: TextOptions;
 }
+
 /**
  *
  * @param ctx - The canvas context to draw on
@@ -313,30 +325,20 @@ export const build = (
     clearCanvas(ctx);
     for (let i = 0; i < drawables.length; i++) {
       if (drawables[i].type === "background") {
-        drawBackground({ ctx: ctx, options: drawables[i].rect });
+        isTypeRectangleOptions(drawables[i].rect) &&
+          drawBackground({ ctx: ctx, options: drawables[i].rect! });
       } else if (drawables[i].type === "grid") {
-        drawGrid({ ctx: ctx, options: drawables[i].grid });
+        isTypeGridOptions(drawables[i].grid) &&
+          drawGrid({ ctx: ctx, options: drawables[i].grid! });
       } else if (drawables[i].type === "blob") {
-        drawBlobs({ ctx: ctx, options: drawables[i].blob });
+        isTypeBlobOptions(drawables[i].blob) &&
+          drawBlobs({ ctx: ctx, options: drawables[i].blob! });
       } else if (drawables[i].type === "text") {
-        drawText({ ctx: ctx, options: drawables[i].text });
+        isTypeTextOptions(drawables[i].text) &&
+          drawText({ ctx: ctx, options: drawables[i].text! });
       }
     }
   } else {
     throw new Error("No objects to draw");
   }
-  /* if (objectToDraw.type === "grid") {
-    drawGrid(
-      objectToDraw.pathsToDrawFrom,
-      canvasDimensions,
-      objectToDraw.gridDimensions,
-      ctx
-    );
-  } else if (objectToDraw.type === "blob") {
-    drawBlobs(ctx, objectToDraw.howMany);
-  } else if (objectToDraw.type === "shape") {
-    generateShape(objectToDraw.shapePath, ctx, objectToDraw.shapeDimensions);
-  } else if (objectToDraw.type === "text") {
-    //drawText(ctx, objectToDraw.text, objectToDraw.textDimensions, objectToDraw.textStyle,);
-  } */
 };

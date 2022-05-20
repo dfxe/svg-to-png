@@ -44,7 +44,7 @@ const Director = () => {
     y: 50,
     text: "Hello World",
     font: "Arial",
-    fontSize: 20,
+    fontSize: 50,
     color: "black",
   });
 
@@ -66,6 +66,7 @@ const Director = () => {
       ]);
     }
   }, [canvas]);
+
   const generate = useCallback(() => {
     generateImages();
   }, [generateImages]);
@@ -75,6 +76,7 @@ const Director = () => {
       setCanvas(canvasRef?.current);
     }
   }, [canvasRef]);
+
   return (
     <div
       style={{
