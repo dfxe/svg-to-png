@@ -4,10 +4,12 @@ import {
   RectangleOptions,
   GridOptions,
   BlobOptions,
+  TextOptions,
 } from "./CanvasBuilder";
 
 const Director = () => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement>();
+  //React context or compose into a single hook
   const [backgroundOptions, setBackgroundOptions] = useState<RectangleOptions>({
     x: 5,
     y: 5,
@@ -37,6 +39,14 @@ const Director = () => {
       seed: Math.random() * 100,
     },
   });
+  const [textOptions, setTextOptions] = useState<TextOptions>({
+    x: 5,
+    y: 50,
+    text: "Hello World",
+    font: "Arial",
+    fontSize: 20,
+    color: "black",
+  });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -52,6 +62,7 @@ const Director = () => {
         { type: "background", rect: backgroundOptions },
         { type: "grid", grid: gridOptions },
         { type: "blob", blob: blobOptions },
+        { type: "text", text: textOptions },
       ]);
     }
   }, [canvas]);

@@ -1,7 +1,6 @@
 //@ts-ignore
 import blobshape from "blobshape";
 import { saveAs } from "file-saver";
-import { urlToHttpOptions } from "url";
 
 /**
  * Draws text onto the canvas
@@ -12,14 +11,21 @@ import { urlToHttpOptions } from "url";
  * @param font - The font to use
  * @param color - The color to draw the text in
  */
-const drawText = (
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  text: string,
-  font: string,
-  color: string
-) => {
+export interface TextOptions {
+  x: number;
+  y: number;
+  text: string;
+  font: string;
+  fontSize: number;
+  color: string;
+}
+const drawText = ({
+  ctx,
+  options: { x, y, text, font, fontSize, color },
+}: {
+  ctx: CanvasRenderingContext2D;
+  options: TextOptions;
+}) => {
   ctx.font = font;
   ctx.fillStyle = color;
   ctx.fillText(text, x, y);
@@ -287,18 +293,18 @@ const clearCanvas = (ctx: CanvasRenderingContext2D) => {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 };
 
-/**
- * Executes drawing
- * @param ctx - The canvas context to draw on
- * @param canvasDimensions - The dimensions of the canvas
- * @param objectToDraw - The object to draw
- */
 interface DrawObject {
   type: string;
   rect?: RectangleOptions;
   grid?: GridOptions;
   blob?: BlobOptions;
+  text?: TextOptions;
 }
+/**
+ *
+ * @param ctx - The canvas context to draw on
+ * @param drawables - The objects to draw on the canvas
+ */
 export const build = (
   ctx: CanvasRenderingContext2D,
   drawables: DrawObject[]
@@ -312,6 +318,8 @@ export const build = (
         drawGrid({ ctx: ctx, options: drawables[i].grid });
       } else if (drawables[i].type === "blob") {
         drawBlobs({ ctx: ctx, options: drawables[i].blob });
+      } else if (drawables[i].type === "text") {
+        drawText({ ctx: ctx, options: drawables[i].text });
       }
     }
   } else {
