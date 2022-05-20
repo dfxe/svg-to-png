@@ -1,6 +1,29 @@
 //@ts-ignore
 import blobshape from "blobshape";
 import { saveAs } from "file-saver";
+
+/**
+ * Draws text onto the canvas
+ * @param ctx - The canvas context to draw on
+ * @param x - The x coordinate of the top left corner of the rectangle
+ * @param y - The y coordinate of the top left corner of the rectangle
+ * @param text - The text to draw
+ * @param font - The font to use
+ * @param color - The color to draw the text in
+ */
+export const drawText = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  text: string,
+  font: string,
+  color: string
+) => {
+  ctx.font = font;
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+};
+
 /**
  * Fills the canvas, fully width and height, with the given color gradient
  * @remarks
@@ -75,6 +98,9 @@ export const generateBackground = (
     br: radius,
     bl: radius,
   } || { tl: 0, tr: 0, br: 0, bl: 0 };
+
+  //TODO: test this
+  ctx!.fillStyle = fill;
 
   ctx.beginPath();
   ctx.moveTo(x + radiusDimensions.tl, y);
@@ -229,4 +255,26 @@ export const saveCanvasToBlob = (canvas: HTMLCanvasElement) => {
  */
 export const clearCanvas = (ctx: CanvasRenderingContext2D) => {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+};
+
+export const builderDirector = (
+  ctx: CanvasRenderingContext2D,
+  canvasDimensions: { width: number; height: number },
+  objectToDraw: any
+) => {
+  clearCanvas(ctx);
+  if (objectToDraw.type === "grid") {
+    drawGrid(
+      objectToDraw.pathsToDrawFrom,
+      canvasDimensions,
+      objectToDraw.gridDimensions,
+      ctx
+    );
+  } else if (objectToDraw.type === "blob") {
+    drawBlobs(ctx, objectToDraw.howMany);
+  } else if (objectToDraw.type === "shape") {
+    generateShape(objectToDraw.shapePath, ctx, objectToDraw.shapeDimensions);
+  } else if (objectToDraw.type === "text") {
+    //drawText(ctx, objectToDraw.text, objectToDraw.textDimensions, objectToDraw.textStyle,);
+  }
 };

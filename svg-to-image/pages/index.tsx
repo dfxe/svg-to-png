@@ -1,9 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import BlobCanvas from "../components/BlobCanvas";
-import ConcentricsCanvas from "../components/ConcentricsCanvas";
-import BackgroundCanvas from "../components/BackgroundCanvas";
-import SVGtoPNG from "../components/SVGCanvas";
+import Director from "../components/Director";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
@@ -26,10 +23,7 @@ const Home: NextPage = () => {
           margin: 0,
         }}
       >
-        <BlobCanvas />
-
-        <SVGtoPNG></SVGtoPNG>
-        {/* <ConcentricsCanvas /> */}
+        <Director></Director>
       </main>
     </div>
   );

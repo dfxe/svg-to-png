@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { drawBlobs } from "./RenderingFunctions/RenderingFunctions";
-
-function BlobCanvas() {
+import { builderDirector } from "./CanvasBuilder";
+const Director = () => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -16,6 +15,13 @@ function BlobCanvas() {
       //best quality
       commonContext!.imageSmoothingEnabled = true;
       commonContext!.imageSmoothingQuality = "high";
+
+      //builder with director
+      const builder = builderDirector(
+        commonContext!,
+        { width: 100, height: 100 },
+        { width: 100, height: 100 }
+      );
     }
   }, [canvas]);
   const generate = useCallback(() => {
@@ -28,27 +34,15 @@ function BlobCanvas() {
         flexDirection: "column",
       }}
     >
-      {/* download anchor IS NOT ON THE FEATURE LIST so stop */}
-
-      <canvas
-        style={{
-          width: "100%",
-          height: "100%",
-
-          transform: "translate(0,0)",
-        }}
-        aria-label="canvas-label"
-        ref={canvasRef}
-      >
+      <canvas aria-label="canvas-label" ref={canvasRef}>
         <p>Can not display canvas.</p>
       </canvas>
-
       <br></br>
       <button onClick={() => generate()} style={{ padding: "1em" }}>
         Generate
       </button>
     </div>
   );
-}
+};
 
-export default BlobCanvas;
+export default Director;
