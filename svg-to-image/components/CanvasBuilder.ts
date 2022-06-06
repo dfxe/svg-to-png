@@ -321,7 +321,7 @@ export const build = (
   ctx: CanvasRenderingContext2D,
   drawables: DrawObject[]
 ) => {
-  if (drawables.length >= 1) {
+  if (drawables.length > 0) {
     clearCanvas(ctx);
     for (let i = 0; i < drawables.length; i++) {
       if (drawables[i].type === "background") {
