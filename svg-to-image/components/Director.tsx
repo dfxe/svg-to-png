@@ -59,10 +59,10 @@ const Director = () => {
       commonContext!.imageSmoothingQuality = "high";
 
       build(commonContext!, [
-        { type: "background", rect: backgroundOptions },
-        { type: "grid", grid: gridOptions },
-        { type: "blob", blob: blobOptions },
-        { type: "text", text: textOptions },
+        { rect: backgroundOptions },
+        { grid: gridOptions },
+        { blob: blobOptions },
+        { text: textOptions },
       ]);
     }
   }, [canvas]);
@@ -85,7 +85,7 @@ const Director = () => {
       }}
     >
       <canvas aria-label="canvas-label" ref={canvasRef}>
-        <p>Can not display canvas.</p>
+        <p>Can not display canvas. Browser not supported.</p>
       </canvas>
       <br></br>
       <button onClick={() => generate()} style={{ padding: "1em" }}>

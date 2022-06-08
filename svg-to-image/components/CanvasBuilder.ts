@@ -305,7 +305,6 @@ const isTypeTextOptions = (shape: any): shape is TextOptions => {
   return (shape as TextOptions) !== undefined;
 };
 interface DrawObject {
-  type: string;
   rect?: RectangleOptions;
   grid?: GridOptions;
   blob?: BlobOptions;
@@ -313,7 +312,7 @@ interface DrawObject {
 }
 
 /**
- *
+ * The builder. Executes based on the type of shape.
  * @param ctx - The canvas context to draw on
  * @param drawables - The objects to draw on the canvas
  */
@@ -324,19 +323,17 @@ export const build = (
   if (drawables.length > 0) {
     clearCanvas(ctx);
     for (let i = 0; i < drawables.length; i++) {
-      if (drawables[i].type === "background") {
-        isTypeRectangleOptions(drawables[i].rect) &&
-          drawBackground({ ctx: ctx, options: drawables[i].rect! });
-      } else if (drawables[i].type === "grid") {
-        isTypeGridOptions(drawables[i].grid) &&
-          drawGrid({ ctx: ctx, options: drawables[i].grid! });
-      } else if (drawables[i].type === "blob") {
-        isTypeBlobOptions(drawables[i].blob) &&
-          drawBlobs({ ctx: ctx, options: drawables[i].blob! });
-      } else if (drawables[i].type === "text") {
-        isTypeTextOptions(drawables[i].text) &&
-          drawText({ ctx: ctx, options: drawables[i].text! });
-      }
+      isTypeRectangleOptions(drawables[i].rect) &&
+        drawBackground({ ctx: ctx, options: drawables[i].rect! });
+
+      isTypeGridOptions(drawables[i].grid) &&
+        drawGrid({ ctx: ctx, options: drawables[i].grid! });
+
+      isTypeBlobOptions(drawables[i].blob) &&
+        drawBlobs({ ctx: ctx, options: drawables[i].blob! });
+
+      isTypeTextOptions(drawables[i].text) &&
+        drawText({ ctx: ctx, options: drawables[i].text! });
     }
   } else {
     throw new Error("No objects to draw");
