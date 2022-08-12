@@ -312,7 +312,7 @@ interface DrawObject {
 }
 
 /**
- * The builder. Executes based on the type of shape.
+ * The builder. Executes based on the TS type of shape.
  * @param ctx - The canvas context to draw on
  * @param drawables - The objects to draw on the canvas
  */

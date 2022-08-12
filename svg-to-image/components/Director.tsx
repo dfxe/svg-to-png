@@ -13,15 +13,15 @@ const Director = () => {
   const [backgroundOptions, setBackgroundOptions] = useState<RectangleOptions>({
     x: 5,
     y: 5,
-    width: 280,
-    height: 140,
+    width: 100,
+    height: 40,
     radius: 20,
     fill: "red",
     stroke: false,
   });
   const [gridOptions, setGridOptions] = useState<GridOptions>({
     pathsToDrawFrom: ["/cc.svg"],
-    canvasDimensions: { width: 280, height: 100 },
+    canvasDimensions: { width: 400, height: 440 },
     gridDimensions: {
       rows: 5,
       cols: 5,
@@ -36,7 +36,7 @@ const Director = () => {
       size: 100,
       grow: 4,
       edges: 3,
-      seed: Math.random() * 100,
+      seed: Math.random(),
     },
   });
   const [textOptions, setTextOptions] = useState<TextOptions>({
@@ -58,6 +58,7 @@ const Director = () => {
       commonContext!.imageSmoothingEnabled = true;
       commonContext!.imageSmoothingQuality = "high";
 
+      //just plug-in objects you need to create
       build(commonContext!, [
         { rect: backgroundOptions },
         { grid: gridOptions },
@@ -78,12 +79,7 @@ const Director = () => {
   }, [canvasRef]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <canvas aria-label="canvas-label" ref={canvasRef}>
         <p>Can not display canvas. Browser not supported.</p>
       </canvas>
