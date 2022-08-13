@@ -57,35 +57,31 @@ const drawGradient = ({
   ctx: CanvasRenderingContext2D;
   options: GradientOptions;
 }) => {
-  if (options.gradientType === "linear") {
-    const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
-    gradient.addColorStop(0, options.colors[0]);
-    gradient.addColorStop(1, options.colors[1]);
+  if (gradientType === "linear") {
+    const gradient = ctx.createLinearGradient(0, 0, width, 0);
+    gradient.addColorStop(0, colors[0]);
+    gradient.addColorStop(1, colors[1]);
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  } else if (options.gradientType === "radial") {
+    ctx.fillRect(x, y, width, height);
+  } else if (gradientType === "radial") {
     const gradient = ctx.createRadialGradient(
-      ctx.canvas.width / 2,
-      ctx.canvas.height / 2,
+      width / 2,
+      height / 2,
       0,
-      ctx.canvas.width / 2,
-      ctx.canvas.height / 2,
-      ctx.canvas.width / 2
+      width / 2,
+      height / 2,
+      width / 2
     );
-    gradient.addColorStop(0, options.colors[0]);
-    gradient.addColorStop(1, options.colors[1]);
+    gradient.addColorStop(0, colors[0]);
+    gradient.addColorStop(1, colors[1]);
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  } else if (options.gradientType === "conic") {
-    const gradient = ctx.createConicGradient(
-      ctx.canvas.width / 2,
-      ctx.canvas.height / 2,
-      0
-    );
-    gradient.addColorStop(0, options.colors[0]);
-    gradient.addColorStop(1, options.colors[1]);
+    ctx.fillRect(x, y, width, height);
+  } else if (gradientType === "conic") {
+    const gradient = ctx.createConicGradient(30, width / 2, height / 2);
+    gradient.addColorStop(0, colors[0]);
+    gradient.addColorStop(1, colors[1]);
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.fillRect(x, y, width, height);
   } else {
     throw new Error("Invalid gradient type");
   }

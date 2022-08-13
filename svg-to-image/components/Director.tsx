@@ -28,7 +28,7 @@ const Director = () => {
     radius: 20,
     fill: "red",
     stroke: false,
-    gradientType: "linear",
+    gradientType: "radial",
     colors: ["white", "black"],
   });
   const [gridOptions, setGridOptions] = useState<GridOptions>({
