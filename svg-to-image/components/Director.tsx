@@ -5,6 +5,7 @@ import {
   GridOptions,
   BlobOptions,
   TextOptions,
+  GradientOptions,
 } from "./CanvasBuilder";
 
 const Director = () => {
@@ -18,6 +19,17 @@ const Director = () => {
     radius: 20,
     fill: "red",
     stroke: false,
+  });
+  const [gradientOptions, setGradientOptions] = useState<GradientOptions>({
+    x: 5,
+    y: 5,
+    width: 100,
+    height: 40,
+    radius: 20,
+    fill: "red",
+    stroke: false,
+    gradientType: "linear",
+    colors: ["white", "black"],
   });
   const [gridOptions, setGridOptions] = useState<GridOptions>({
     pathsToDrawFrom: ["/cc.svg"],
@@ -61,9 +73,10 @@ const Director = () => {
       //just plug-in objects you need to create
       build(commonContext!, [
         { rect: backgroundOptions },
-        { grid: gridOptions },
+        /* { grid: gridOptions },
         { blob: blobOptions },
-        { text: textOptions },
+        { text: textOptions }, */
+        { gradient: gradientOptions },
       ]);
     }
   }, [canvas]);

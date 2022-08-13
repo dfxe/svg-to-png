@@ -30,27 +30,40 @@ const drawText = ({
   ctx.fillText(text, x, y);
 };
 
+export interface GradientOptions {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  radius: number;
+  fill: string;
+  stroke: boolean;
+  gradientType: string;
+  colors: string[];
+}
 /**
  * Fills the canvas, fully width and height, with the given color gradient
  * @remarks
  * This method is part of the RenderingFunctions interface
  * @param ctx - The canvas context to draw on
- * @param gradientType - The gradient to use: linear, radial, or conic
- * @param colors - color array for the gradient
+ * @param options - The gradient to use: linear, radial, or conic and color array for the gradient
+ *
  * @beta
  */
-const drawGradient = (
-  ctx: CanvasRenderingContext2D,
-  gradientType: string,
-  colors: string[]
-) => {
-  if (gradientType === "linear") {
+const drawGradient = ({
+  ctx,
+  options: { x, y, width, height, radius, fill, stroke, gradientType, colors },
+}: {
+  ctx: CanvasRenderingContext2D;
+  options: GradientOptions;
+}) => {
+  if (options.gradientType === "linear") {
     const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
-    gradient.addColorStop(0, colors[0]);
-    gradient.addColorStop(1, colors[1]);
+    gradient.addColorStop(0, options.colors[0]);
+    gradient.addColorStop(1, options.colors[1]);
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  } else if (gradientType === "radial") {
+  } else if (options.gradientType === "radial") {
     const gradient = ctx.createRadialGradient(
       ctx.canvas.width / 2,
       ctx.canvas.height / 2,
@@ -59,18 +72,18 @@ const drawGradient = (
       ctx.canvas.height / 2,
       ctx.canvas.width / 2
     );
-    gradient.addColorStop(0, colors[0]);
-    gradient.addColorStop(1, colors[1]);
+    gradient.addColorStop(0, options.colors[0]);
+    gradient.addColorStop(1, options.colors[1]);
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  } else if (gradientType === "conic") {
+  } else if (options.gradientType === "conic") {
     const gradient = ctx.createConicGradient(
       ctx.canvas.width / 2,
       ctx.canvas.height / 2,
       0
     );
-    gradient.addColorStop(0, colors[0]);
-    gradient.addColorStop(1, colors[1]);
+    gradient.addColorStop(0, options.colors[0]);
+    gradient.addColorStop(1, options.colors[1]);
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   } else {
@@ -193,10 +206,10 @@ const drawGrid = ({
 }) => {
   const gridWidth = canvasDimensions.width / gridDimensions.cols;
   const gridHeight = canvasDimensions.height / gridDimensions.rows;
-  const gridGapWidth = gridWidth + gridDimensions.gridGap;
-  const gridGapHeight = gridHeight + gridDimensions.gridGap;
+  /* const gridGapWidth = gridWidth + gridDimensions.gridGap;
+  const gridGapHeight = gridHeight + gridDimensions.gridGap; */
   //padding should act as a buffer around the grid
-  const gridX = gridDimensions.padding;
+  /*   const gridX = gridDimensions.padding;
   const gridY = gridDimensions.padding;
   const gridWidthWithPadding = gridWidth - gridDimensions.padding * 2;
   const gridHeightWithPadding = gridHeight - gridDimensions.padding * 2;
@@ -204,7 +217,7 @@ const drawGrid = ({
   const gridGapHeightWithPadding = gridGapHeight - gridDimensions.padding * 2;
   //auto width and height
   const autoWidth = gridWidth / pathsToDrawFrom.length;
-  const autoHeight = gridHeight / pathsToDrawFrom.length;
+  const autoHeight = gridHeight / pathsToDrawFrom.length; */
   for (let i = 0; i < gridDimensions.rows; i++) {
     for (let j = 0; j < gridDimensions.cols; j++) {
       drawShape(pathsToDrawFrom[0], ctx, {
@@ -304,11 +317,15 @@ const isTypeBlobOptions = (shape: any): shape is BlobOptions => {
 const isTypeTextOptions = (shape: any): shape is TextOptions => {
   return (shape as TextOptions) !== undefined;
 };
+const isTypeGradientOptions = (shape: any): shape is GradientOptions => {
+  return (shape as GradientOptions) !== undefined;
+};
 interface DrawObject {
   rect?: RectangleOptions;
   grid?: GridOptions;
   blob?: BlobOptions;
   text?: TextOptions;
+  gradient?: GradientOptions;
 }
 
 /**
@@ -334,6 +351,9 @@ export const build = (
 
       isTypeTextOptions(drawables[i].text) &&
         drawText({ ctx: ctx, options: drawables[i].text! });
+
+      isTypeGradientOptions(drawables[i].gradient) &&
+        drawGradient({ ctx: ctx, options: drawables[i].gradient! });
     }
   } else {
     throw new Error("No objects to draw");
