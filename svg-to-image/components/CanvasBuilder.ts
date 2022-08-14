@@ -285,7 +285,7 @@ const saveCanvasToImage = (canvas: HTMLCanvasElement) => {
  * Saves the canvas to a file
  * @param canvas - The canvas to draw on
  */
-const saveCanvasToBlob = (canvas: HTMLCanvasElement) => {
+export const saveCanvasToBlob = (canvas: HTMLCanvasElement | null) => {
   canvas!.toBlob((blob) => {
     if (blob) {
       saveAs(blob, `${Math.random().toString(16).slice(2, -1)}.png`);

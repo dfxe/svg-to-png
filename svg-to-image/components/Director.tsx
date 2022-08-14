@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   build,
+  saveCanvasToBlob,
   RectangleOptions,
   GridOptions,
   BlobOptions,
@@ -10,6 +11,7 @@ import {
 
 const Director = () => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement>();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   //React context or compose into a single hook
   const [backgroundOptions, setBackgroundOptions] = useState<RectangleOptions>({
     x: 5,
@@ -60,8 +62,6 @@ const Director = () => {
     color: "black",
   });
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
   const generateImages = useCallback(() => {
     if (canvas) {
       //set width and height of image to 100
@@ -99,6 +99,12 @@ const Director = () => {
       <br></br>
       <button onClick={() => generate()} style={{ padding: "1em" }}>
         Generate
+      </button>
+      <button
+        onClick={() => saveCanvasToBlob(canvasRef?.current)}
+        style={{ padding: "1em" }}
+      >
+        Save
       </button>
     </div>
   );
