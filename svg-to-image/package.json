@@ -12,6 +12,7 @@
     "@microsoft/tsdoc": "^0.14.1",
     "blobshape": "^1.0.0",
     "canvg": "^4.0.1",
+    "cypress": "^10.4.0",
     "file-saver": "^2.0.5",
     "next": "12.2.5",
     "npm-check-updates": "^16.0.5",

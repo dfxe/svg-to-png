@@ -100,6 +100,7 @@ const Director = () => {
       <button onClick={() => generate()} style={{ padding: "1em" }}>
         Generate
       </button>
+
       <button
         onClick={() => saveCanvasToBlob(canvasRef?.current)}
         style={{ padding: "1em" }}
