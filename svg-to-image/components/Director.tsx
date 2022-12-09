@@ -73,9 +73,9 @@ const Director = () => {
       //just plug-in objects you need to create
       build(commonContext!, [
         { rect: backgroundOptions },
-        /* { grid: gridOptions },
+        { grid: gridOptions },
         { blob: blobOptions },
-        { text: textOptions }, */
+        { text: textOptions },
         { gradient: gradientOptions },
       ]);
     }
