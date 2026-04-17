@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Canvas Zine — SVG · Riso</title>
+    <link rel="icon" href="favicon.ico" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="version-badge">v0.3.0</div>
+    <main>
+      <header class="masthead">
+        <h1>
+          Canvas<br />
+          <span class="accent">Zine</span>
+        </h1>
+        <small>SVG &nbsp;✶&nbsp; RISOGRAPH &nbsp;✶&nbsp; PNG</small>
+      </header>
+      <div class="stage">
+        <canvas
+          id="stage"
+          width="400"
+          height="440"
+          aria-label="canvas-label"
+        >
+          <p>Can not display canvas. Browser not supported.</p>
+        </canvas>
+        <div class="controls">
+          <label class="upload">
+            Upload SVG
+            <input
+              id="svg-upload"
+              type="file"
+              accept=".svg,image/svg+xml"
+            />
+          </label>
+          <button id="generate" type="button">Generate</button>
+          <button id="save" type="button">Save</button>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
